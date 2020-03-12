@@ -1,8 +1,8 @@
 # shopify
 
 ## Available Commands:
-  configure   Create a configuration file
-  deploy      deploy files to shopify
+- configure   Create a configuration file
+- deploy      deploy files to shopify
   download    Download one or all of the theme files
   get         Get a theme and config from shopify
   help        Help about any command
