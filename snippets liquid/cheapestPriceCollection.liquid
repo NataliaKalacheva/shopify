@@ -1,0 +1,2 @@
+{% assign sortedProducts = collection.products | sort: 'price' %}
+<span>From {{ sortedProducts[0].price_min | money }}</span> 
