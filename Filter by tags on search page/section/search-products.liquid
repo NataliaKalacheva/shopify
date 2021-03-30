@@ -1,0 +1,287 @@
+{% case section.settings.grid %}
+    {% when 2 %}
+        {%- assign grid_item_width = 'u-1/2@phab' -%}
+        {%- assign image_size = '740x' -%}
+        {% if section.settings.show_sidebar and section.blocks.size > 0 and section.settings.sidebar_layout == 'sidebar' %}
+            {%- assign container_size = 'full' -%}
+        {% else %}
+            {%- assign container_size = 'large' -%}
+        {% endif %}
+    {% when 3 %}
+        {%- assign grid_item_width = 'u-1/2@phab u-1/3@tab' -%}
+        {%- assign image_size = '520x' -%}
+        {% if section.settings.show_sidebar and section.blocks.size > 0 and section.settings.sidebar_layout == 'sidebar' %}
+            {%- assign container_size = 'full' -%}
+        {% else %}
+            {%- assign container_size = 'large' -%}
+        {% endif %}
+    {% when 4 %}
+        {%- assign grid_item_width = 'u-1/3@tab u-1/4@desk' -%}
+        {%- assign image_size = '380x' -%}
+        {%- assign container_size = 'full' -%}
+{% endcase %}
+
+{% assign allTags = '' | split: ',' %}
+
+{% for product in search.results %}  
+  {% for tag in product.tags %}
+    {% assign tagName = tag | split: ',' %}
+    {%- assign allTags = allTags | concat: tagName -%}
+  {% endfor %}
+{% endfor %}
+
+{%- assign allTags = allTags | uniq -%}
+<div class="container container--{{ container_size }}">
+<div class="collection-products" data-section-type="search-results">
+
+    {% comment %}Sidebar blocks count{% endcomment %}
+    {% if section.settings.show_sidebar and section.blocks.size > 0 %}
+    <div class="o-layout">
+
+        <div class="o-layout__item u-1/1 u-1/4@lap o-layout__item--sidebar">
+            <aside class="collection-sidebar collection-sidebar--{{ section.settings.sidebar_layout }} js-collection-draw">
+                <div class="collection-sidebar__wrapper">
+                    {% for block in section.blocks %}
+                        {% if block.type == 'linklist' %}
+                            {% if linklists[block.settings.linklist].links.size > 0 %}
+                                <div class="collection-sidebar__section">
+                                    <h4 class="collection-sidebar__title h5">{{ linklists[block.settings.linklist].title }}</h4>
+                                    <ul class="collection-sidebar__items o-list-bare">
+                                        {% for link in linklists[block.settings.linklist].links %}
+                                            <li class="collection-sidebar__item{% if link.active %} collection-sidebar__item--active{% endif %}">
+                                                <a href="{{ link.url }}" class="collection-sidebar__link">{{ link.title }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                        {% if block.type == 'tags' %}
+                            {% if allTags.size > 0 %}
+        
+                                <div class="collection-sidebar__section collection-sidebar__section--tags">
+                                    <h4 class="collection-sidebar__title h5">
+                                        {{ block.settings.title | escape }}
+                                    </h4>
+                                    <ul class="collection-sidebar__items o-list-bare">
+                                        {% for tag in allTags %}
+                                            <li class="collection-sidebar__item">
+                                                <a href="" class="collection-sidebar__link">{{ tag }}</a>
+                                            </li> 
+                                        {% endfor %}
+                                        {% for tag in current_tags %}
+                                          {{ tag }}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% if current_tags %}
+                                    <div class="collection-sidebar__section collection-sidebar__section--group-clear">
+                                        <a href="{{ collection.url }}" class="c-btn c-btn--small c-btn--light c-btn--close">{{ 'collections.general.tags_clear_filters' | t }}</a>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                        {% if block.type == 'group' %}
+                            {% if allTags.size > 1 %}
+                                <!-- A recursive loop to catch and filter out the different tag categories -->
+                                {% assign c = 0 %} 
+                                {% for t in allTags %}
+                                    {% capture cat %}{{ cat }}{% capture temp_cat %}{% if t contains '_' %}{% assign cat_grp = t | split: '_' %}{{ cat_grp.first }}{% endif %}{% endcapture %}{% unless cat contains temp_cat %}{% if t contains '_' %}{% assign new_cat_grp = t | split: '_' %}{{ new_cat_grp.first }}{% endif %}{% unless forloop.last %}+{% endunless %}{% assign c = c | plus: 1 %}{% endunless %}{% endcapture %}
+                                {% endfor %}
+
+                                <!-- create array of tag categories -->
+                                {% assign cat_array = cat | split: '+' %}
+
+
+                                <!-- loop through tag categories -->  
+                                {% for i in cat_array %}
+                                    <!-- ignore if tag category is empty -->  
+                                    {% unless i == '' %}
+                                    {% assign tagDowncased = i | downcase %}
+                                    {% if tagDowncased == 'tog' %}
+                                        {% render 'search-tags-group', collection: collection, current_tags: current_tags, allTags: allTags, i: i %}
+                                    {% endif %}
+                                  
+                                    {% endunless %}
+                                {% endfor %}
+
+                                {% for i in cat_array %}
+                                    <!-- ignore if tag category is empty -->  
+                                    {% unless i == '' %}
+                                    {% assign tagDowncased = i | downcase %}
+                                   
+                                    {% if tagDowncased == 'colour' or tagDowncased == 'color' %}
+                                        {% render 'search-tags-group', collection: collection, current_tags: current_tags, allTags: allTags, i: i %}
+                                    {% endif %}
+                                    {% endunless %}
+                                {% endfor %}
+
+                                {% for i in cat_array %}
+                                    <!-- ignore if tag category is empty -->  
+                                    {% unless i == '' %}
+                                    {% assign tagDowncased = i | downcase %}
+                                   
+                                    {% if tagDowncased == 'size' %}
+                                        {% render 'search-tags-group', collection: collection, current_tags: current_tags, allTags: allTags, i: i %}
+                                    {% endif %}
+                                    {% endunless %}
+                                {% endfor %}
+
+                                {% for i in cat_array %}
+                                    <!-- ignore if tag category is empty -->  
+                                    {% unless i == '' %}
+                                    {% assign tagDowncased = i | downcase %}
+                                   
+                                    {% if tagDowncased != 'size' and tagDowncased != 'color' and tagDowncased != 'colour' and tagDowncased != 'tog' %}
+                                        {% render 'search-tags-group', collection: collection, current_tags: current_tags, allTags: allTags, i: i %}
+                                    {% endif %}
+                                    {% endunless %}
+                                {% endfor %}
+                    
+
+                                {% if current_tags %}
+                                    <div class="collection-sidebar__section collection-sidebar__section--group-clear">
+                                        <a href="{{ collection.url }}" class="c-btn c-btn--small c-btn--light c-btn--close">{{ 'collections.general.tags_clear_filters' | t }}</a>
+                                    </div>
+                                {% endif %}
+
+                            {% endif %}                                    
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </aside>
+        </div>
+
+        <div class="o-layout__item u-1/1 {% if section.settings.sidebar_layout == 'sidebar' %}u-3/4@lap o-layout__item--products {% else %}u-1/1@desk{% endif %}">
+
+    {% endif %}
+    {% comment %}Sidebar blocks count{% endcomment %}
+
+            <div class="o-layout{% if settings.product_grid_masonry %} o-layout--masonry{% endif %} o-layout--flex o-layout--huge@wide-up {% if section.settings.grid == 4 %} o-layout--small{% endif %}{% if section.settings.grid_mobile == '2' %} o-layout--small@tab-down{% endif %}">
+                {% for product in search.results %}  
+                    {% if product.object_type == 'product' %}
+                        <div class="o-layout__item u-1/{{ section.settings.grid_mobile }} {{ grid_item_width }}">
+                            {% render 'product-grid-item', product: product, page: 'search' %}
+                        </div>
+                    {% endif %}        
+                {% endfor %}
+            </div>
+
+    {% comment %}Sidebar blocks count{% endcomment %}
+    {% if section.settings.show_sidebar and section.blocks.size > 0 %}
+        </div>                        
+    </div>
+    {% endif %}
+    {% comment %}Sidebar blocks count{% endcomment %}
+</div>
+</div>
+{% schema %}
+{
+    "name": "Search filter",
+    "class": "js-section__collection",
+    "settings": [
+        {
+            "type": "range",
+            "id": "grid",
+            "label": "Products per row (desktop)",
+            "min": 2,
+            "max": 4,
+            "step": 1,
+            "default": 3
+        },
+        {
+            "type": "select",
+            "id": "grid_mobile",
+            "label": "Products per row (mobile)",
+            "default": "1",
+            "options": [
+                {
+                    "label": "1",
+                    "value": "1"
+                },
+                {
+                    "label": "2",
+                    "value": "2"
+                }
+            ]
+        },
+        {
+            "type": "range",
+            "id": "rows",
+            "label": "Rows",
+            "min": 2,
+            "max": 12,
+            "step": 1,
+            "default": 6
+        },
+        {
+            "type": "header",
+            "content": "Filters"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_sidebar",
+            "label": "Enable filters",
+            "default": false
+        },
+        { 
+            "type": "select",
+            "id": "sidebar_layout",
+            "label": "Desktop layout",
+            "default": "sidebar",
+            "options": [
+                {
+                    "value": "sidebar",
+                    "label": "Sidebar"
+                },
+                {
+                    "value": "drawer",
+                    "label": "Drawer"
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": "Use content below to add filters."
+        }
+    ],
+    "blocks": [
+        {
+            "type": "linklist",
+            "name": "Menu",
+            "settings": [
+                {
+                    "type": "link_list",
+                    "id": "linklist",
+                    "label": "Menu",
+                    "info": "This menu won't show dropdown items"
+                }
+            ]
+        },
+        {
+            "type": "tags",
+            "name": "All tags",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "title",
+                    "label": "Heading",
+                    "default": "Filter"
+                }
+            ]
+        },
+        {
+            "type": "group",
+            "name": "Tag groups",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "paragraph",
+                    "content": "Filtering by tag groups requires tag formatting. [Learn more](https://support.safeasmilk.co/article/113-collection-page-add-custom-tag-groups-for-filtering)"
+                }
+            ]
+        }
+    ]
+}
+{% endschema %}

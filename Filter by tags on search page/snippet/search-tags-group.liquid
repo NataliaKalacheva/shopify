@@ -1,0 +1,34 @@
+<div class="collection-sidebar__section collection-sidebar__section--tags collection-sidebar__section--group">
+    <h4 class="collection-sidebar__title h5">{{ i }}</h4>
+    <ul class="collection-sidebar__items collection-sidebar__items--{{ i | downcase }} o-list-bare">
+        <!-- loop through collection tags -->  
+        {% for t in allTags %}
+            <!-- if tag contains the category title -->
+            {% if t contains i %}
+      
+            {% assign tagDowncased  = i | downcase %}
+            {% assign tagTitle = t | remove_first: i | remove: '_' %}
+            {% if i == 'TOG' %}
+               {% unless tagTitle contains 'TOG' %}
+                 {% continue %}
+               {% endunless %}
+            {% endif %}
+                <!-- strip out tag category prefix and add/remove link for tag filtering -->
+                {% if current_tags contains t %}
+                  <li class="collection-sidebar__item collection-sidebar__item--active js-active" data-category-group="{{ i | downcase }}" data-tag-url="{{ tagTitle }}">
+                      <a href="#" class="js-no-transition collection-sidebar__link js-search-group-link">
+                          {{ tagTitle }}
+                      </a>
+        
+                  </li> 
+                {% else %}
+                  <li class="collection-sidebar__item" data-category-group="{{ i | downcase }}" data-tag-url="{{ tagTitle }}">
+                    <a href="#" class="js-no-transition collection-sidebar__link js-search-group-link">
+                        {{ tagTitle }}
+                    </a>
+                  </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>

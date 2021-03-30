@@ -1,0 +1,311 @@
+<script>
+  (function() {
+    const Shop = Shopify || {};
+    const curPath = window.location.href;
+    const blockedPaths = ['?currency=', '&currency='];
+    const countryMap = {
+    'Albania': {
+      'abbreviation': 'AL',
+      'currency': 'EUR'
+    },
+    'Andorra': {
+      'abbreviation': 'AD',
+      'currency': 'EUR'
+    },
+    'Australia': {
+      'abbreviation': 'AU',
+      'currency': 'AUD'
+    },
+    'Austria': {
+      'abbreviation': 'AT',
+      'currency': 'EUR'
+    },
+    'Belarus': {
+      'abbreviation': 'BY',
+      'currency': 'EUR'
+    },
+    'Belgium': {
+      'abbreviation': 'BE',
+      'currency': 'EUR'
+    },
+    'Bosnia And Herzegowina': {
+      'abbreviation': 'BA',
+      'currency': 'EUR'
+    },
+    'Bulgaria': {
+      'abbreviation': 'BG',
+      'currency': 'EUR'
+    },
+    'Canada': {
+      'abbreviation': 'CA',
+      'currency': 'CAD'
+    },
+    'Croatia': {
+      'abbreviation': 'HR',
+      'currency': 'EUR'
+    },
+    'Cyprus': {
+      'abbreviation': 'CY',
+      'currency': 'EUR'
+    },
+    'Czech Republic': {
+      'abbreviation': 'CZ',
+      'currency': 'EUR'
+    },
+    'Denmark': {
+      'abbreviation': 'DK',
+      'currency': 'EUR'
+    },
+    'Estonia': {
+      'abbreviation': 'EE',
+      'currency': 'EUR'
+    },
+    'Finland': {
+      'abbreviation': 'FI',
+      'currency': 'EUR'
+    },
+    'France': {
+      'abbreviation': 'FR',
+      'currency': 'EUR'
+    },
+    'French Guiana': {
+      'abbreviation': 'GF',
+      'currency': 'EUR'
+    },
+    'French Southern Territories': {
+      'abbreviation': 'TF',
+      'currency': 'EUR'
+    },
+    'Germany': {
+      'abbreviation': 'DE',
+      'currency': 'EUR'
+    },
+    'Gibraltar': {
+      'abbreviation': 'GI',
+      'currency': 'GBP'
+    },
+    'Greece': {
+      'abbreviation': 'GR',
+      'currency': 'EUR'
+    },
+    'Greenland': {
+      'abbreviation': 'GL',
+      'currency': 'EUR'
+    },
+    'Guernsey': {
+      'abbreviation': 'GG',
+      'currency': 'GBP'
+    },
+    'Hungary': {
+      'abbreviation': 'HU',
+      'currency': 'EUR'
+    },
+    'Iceland': {
+      'abbreviation': 'IS',
+      'currency': 'EUR'
+    },
+    'India': {
+      'abbreviation': 'IN',
+      'currency': 'GBP'
+    },
+    'Ireland': {
+      'abbreviation': 'IE',
+      'currency': 'EUR'
+    },
+    'Isle of Man': {
+      'abbreviation': 'IM',
+      'currency': 'GBP'
+    },
+    'Italy': {
+      'abbreviation': 'IT',
+      'currency': 'EUR'
+    },
+    'Jersey': {
+      'abbreviation': 'JE',
+      'currency': 'GBP'
+    },
+    'Latvia': {
+      'abbreviation': 'LV',
+      'currency': 'EUR'
+    },
+    'Liechtenstein': {
+      'abbreviation': 'LI',
+      'currency': 'EUR'
+    },
+    'Lithuania': {
+      'abbreviation': 'LT',
+      'currency': 'EUR'
+    },
+    'Luxembourg': {
+      'abbreviation': 'LU',
+      'currency': 'EUR'
+    },
+    'Malta': {
+      'abbreviation': 'MT',
+      'currency': 'EUR'
+    },
+    'Moldova': {
+      'abbreviation': 'MD',
+      'currency': 'EUR'
+    },
+    'Martinique': {
+      'abbreviation': 'MQ',
+      'currency': 'EUR'
+    },
+    'Mayotte': {
+      'abbreviation': 'YT',
+      'currency': 'EUR'
+    },
+    'Monaco': {
+      'abbreviation': 'MC',
+      'currency': 'EUR'
+    },
+    'Montenegro': {
+      'abbreviation': 'ME',
+      'currency': 'EUR'
+    },
+    'Nauru': {
+      'abbreviation': 'NR',
+      'currency': 'AUD'
+    },
+    'Netherlands': {
+      'abbreviation': 'NL',
+      'currency': 'EUR'
+    },
+    'North Macedonia': {
+      'abbreviation': 'MK',
+      'currency': 'EUR'
+    },
+    'New Zealand': {
+      'abbreviation': 'NZ',
+      'currency': 'AUD'
+    },
+    'Norfolk Island': {
+      'abbreviation': 'NF',
+      'currency': 'AUD'
+    },
+    'Norway': {
+      'abbreviation': 'NO',
+      'currency': 'EUR'
+    },
+    'Poland': {
+      'abbreviation': 'PL',
+      'currency': 'EUR'
+    },
+    'Portugal': {
+      'abbreviation': 'PT',
+      'currency': 'EUR'
+    },
+    'Romania': {
+      'abbreviation': 'RO',
+      'currency': 'EUR'
+    },
+    'Russia': {
+      'abbreviation': 'RU',
+      'currency': 'EUR'
+    },
+    'San Marino': {
+      'abbreviation': 'SM',
+      'currency': 'EUR'
+    },
+    'Serbia': {
+      'abbreviation': 'RS',
+      'currency': 'EUR'
+    },
+    'Slovakia': {
+    'abbreviation': 'SK',
+    'currency': 'EUR'
+  },
+    'Slovenia': {
+      'abbreviation': 'SI',
+      'currency': 'EUR'
+    },
+    'Spain': {
+      'abbreviation': 'ES',
+      'currency': 'EUR'
+    },
+    'Sweden': {
+      'abbreviation': 'SE',
+      'currency': 'EUR'
+    },
+    'Switzerland': {
+      'abbreviation': 'CH',
+      'currency': 'EUR'
+    },
+    'Turkey': {
+      'abbreviation': 'TR',
+      'currency': 'EUR'
+    },
+    'Ukraine': {
+      'abbreviation': 'UA',
+      'currency': 'EUR'
+    },
+    'United Kingdom': {
+      'abbreviation': 'UK',
+      'currency': 'GBP'
+    },
+    'United States': {
+      'abbreviation': 'US',
+      'currency': 'USD'
+    },
+    'Vatican City State (Holy See)': {
+      'abbreviation': 'VA',
+      'currency': 'EUR'
+    }
+  };
+    const suppotedCurrencies = ['USD', 'GBP', 'CAD', 'AUD', 'EUR'];
+    const setCookie = (name, value, days = 7, path = '/') => {
+      const expires = new Date(Date.now() + days * 864e5).toUTCString()
+      document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=' +   path
+    }
+    let allowCurrencyPreselect = true;
+
+    blockedPaths.forEach(function(blockedPath) {
+      if (curPath.includes(blockedPath)) {
+        allowCurrencyPreselect = false;
+        setCookie('ocushield_currency_selected', '1', { expires: 365 })
+      }
+    });
+
+    if (document.cookie.includes('ocushield_currency_selected')) {
+      allowCurrencyPreselect = false;
+    }
+
+    if (allowCurrencyPreselect) {
+      getLocation();
+    }
+    console.log(allowCurrencyPreselect)
+
+    async function getLocation() {
+      let response = await fetch("/browsing_context_suggestions.json");
+
+      if (!response.ok) {
+        console.log("HTTP-Error: " + response.status);
+        throw new Error(response.status)
+        return
+      }
+
+      if (response.ok) {
+        let location = await response.json();
+        let country = location.detected_values.country.name;
+        let mycurrency = Boolean(countryMap[country]) ? countryMap[country].currency : 'USD';
+
+        if (mycurrency === Shop.currency.active) {
+          setCookie('ocushield_currency_selected', '1', { expires: 365 })
+          return
+        }
+
+        if (suppotedCurrencies.includes(mycurrency)) {
+          preselectCurrency(mycurrency)
+          setCookie('ocushield_currency_selected', '1', { expires: 365 })
+        }
+      }
+    }
+
+    function preselectCurrency(currency) {
+      let params = new URLSearchParams(window.location.search)
+      params.set('currency', currency);
+      window.location.search = `?${params}`;
+    }
+  })();
+  </script>

@@ -15,7 +15,7 @@
 -  watch       Watch directory for changes and update remote theme
 
 ## Flags:
- - -c, --config string              path to config.yml (default "C:\\Users\\Natasha Kalacheva\\Downloads\\config.yml")
+ - -c, --config string              path to config.yml
  - -d, --dir string                 directory that command will take effect. (default current directory)
  - -e, --env stringArray            environment to run the command (default [development])
  - -h, --help                       help for theme
